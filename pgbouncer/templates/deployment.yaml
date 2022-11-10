@@ -117,12 +117,12 @@ spec:
         - name: PGBOUNCER_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "pgbouncer.fullname" . }}-secret
+              name: {{.Values.manualSecretName | default (print (include "pgbouncer.fullname" .) "-secret") }}
               key: adminUser
         - name: PGBOUNCER_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ template "pgbouncer.fullname" . }}-secret
+              name: {{.Values.manualSecretName | default (print (include "pgbouncer.fullname" .) "-secret") }}
               key: adminPassword
         {{- if .Values.pgbouncerExporter.resources }}
         resources: {{ toYaml .Values.pgbouncerExporter.resources | trimSuffix "\n" | nindent 10 }}
@@ -141,7 +141,7 @@ spec:
           name: {{ template "pgbouncer.fullname" . }}-configmap
       - name: userlist
         secret:
-          secretName: {{ template "pgbouncer.fullname" . }}-userlist-secret
+          secretName: {{.Values.manualUserlistSecretName | default (print (include "pgbouncer.fullname" .) "-userlist-secret") }}
       {{- if .Values.extraVolumes -}}
       {{ toYaml .Values.extraVolumes | trimSuffix "\n" | nindent 6 }}
       {{ end -}}
